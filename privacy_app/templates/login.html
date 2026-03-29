@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Secure Login</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: linear-gradient(to right, #eef2f7, #f8fafc);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .login-card {
+            background: white;
+            padding: 35px;
+            width: 370px;
+            border-radius: 14px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-title {
+            text-align: center;
+            color: #1e3a8a;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .system-label {
+            text-align: center;
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+
+        .form-control {
+            border-radius: 8px;
+        }
+
+        input:focus {
+            border-color: #1e3a8a !important;
+            box-shadow: 0 0 6px rgba(30,58,138,0.3) !important;
+        }
+
+        .btn-primary {
+            background-color: #1e3a8a;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .btn-primary:hover {
+            background-color: #172554;
+        }
+
+        .divider {
+            height: 1px;
+            background: #e5e7eb;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="login-card">
+
+    <!-- SYSTEM NAME -->
+    <div class="system-label">
+        🛡 Data Privacy Compliance System
+    </div>
+
+    <!-- TITLE -->
+    <h3 class="login-title">🔐 Secure Login</h3>
+
+    <!-- FORM -->
+    <form method="post">
+        {% csrf_token %}
+
+        <label class="form-label">Username</label>
+        <input type="text" name="username" class="form-control mb-3" required>
+
+        <label class="form-label">Password</label>
+        <input type="password" name="password" class="form-control mb-3" required>
+
+        <button type="submit" class="btn btn-primary w-100">
+            Login
+        </button>
+
+        <div class="divider"></div>
+
+        <!-- 🔐 SYSTEM CREDIBILITY -->
+        <p class="text-center" style="font-size:12px; color:#64748b;">
+            Secure access for authorized personnel only.<br>
+            Compliant with Data Privacy Act of 2012 (RA 10173)
+        </p>
+
+        <!-- 🏫 SCHOOL BRANDING -->
+        <p class="text-center" style="font-size:11px; color:#94a3b8;">
+            GK College of Business Arts & Technology
+        </p>
+
+    </form>
+
+</div>
+
+</body>
+</html>
