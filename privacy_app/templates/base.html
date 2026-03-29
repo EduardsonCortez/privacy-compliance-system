@@ -64,11 +64,6 @@ body{
     margin-top:15px;
 }
 
-/* 🎯 TABLE */
-.table{
-    background:white;
-}
-
 /* 🎯 FOOTER */
 .footer{
     background-color:#1e3a8a;
@@ -77,12 +72,32 @@ body{
     padding:30px 0;
 }
 
-.footer h6{
-    color:#facc15;
+/* 🔥 MODAL */
+.modal{
+    display:none;
+    position:fixed;
+    z-index:9999;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.6);
 }
 
-.footer p{
-    margin:0;
+.modal-content{
+    background:white;
+    margin:5% auto;
+    padding:25px;
+    width:70%;
+    border-radius:12px;
+    max-height:80vh;
+    overflow-y:auto;
+}
+
+.close{
+    float:right;
+    font-size:28px;
+    cursor:pointer;
 }
 
 </style>
@@ -102,103 +117,179 @@ body{
 
 {% if request.user.is_authenticated %}
 
-    <a class="btn btn-outline-light me-2" href="/">Dashboard</a>
+<a class="btn btn-outline-light me-2" href="/">Dashboard</a>
+<a class="btn btn-outline-light me-2" href="/consent/">Consent</a>
+<a class="btn btn-outline-light me-2" href="/breach/">Breach</a>
+<a class="btn btn-outline-light me-2" href="/policy/">Policies</a>
+<a class="btn btn-warning me-2" href="/admin/">Admin</a>
 
-    <a class="btn btn-outline-light me-2" href="/consent/">Consent</a>
+<button onclick="openGuide()" class="btn btn-info me-2">Help ❓</button>
 
-    <a class="btn btn-outline-light me-2" href="/breach/">Breach</a>
-
-    <a class="btn btn-outline-light me-2" href="/policy/">Policies</a>
-
-    <a class="btn btn-warning me-2" href="/admin/">Admin</a>
-
-    <!-- LOGOUT -->
-    <form action="/logout/" method="post" style="display:inline;">
-        {% csrf_token %}
-        <button class="btn btn-danger">Logout</button>
-    </form>
+<form action="/logout/" method="post" style="display:inline;">
+{% csrf_token %}
+<button class="btn btn-danger">Logout</button>
+</form>
 
 {% else %}
-
-    <a class="btn btn-primary" href="/login/">Login</a>
-
+<a class="btn btn-primary" href="/login/">Login</a>
 {% endif %}
 
 </div>
-
 </div>
 </nav>
 
-<!-- HEADER INFO -->
+<!-- HEADER -->
 <div class="container">
-
 <div class="system-header">
 
 <p><strong>User:</strong> {{ request.user.username|default:"Guest" }}</p>
 
 <p><strong>Role:</strong>
 {% if request.user.is_authenticated %}
-    {{ request.user.userprofile.role }}
+{{ request.user.userprofile.role }}
 {% else %}
-    Guest
+Guest
 {% endif %}
 </p>
 
 </div>
-
 </div>
 
-<!-- MAIN CONTENT -->
+<!-- CONTENT -->
 <div class="container mt-4">
-
 {% block content %}
 {% endblock %}
+</div>
 
+<!-- 🔥 GUIDE MODAL -->
+<div id="guideModal" class="modal">
+<div class="modal-content">
+<span class="close" onclick="closeGuide()">&times;</span>
+
+{% if request.user.is_authenticated %}
+
+<!-- ADMIN -->
+{% if request.user.userprofile.role == "ADMIN" %}
+
+<h2>👨‍💼 Administrator Guide</h2>
+<p><strong>Purpose:</strong> Manages the system and ensures compliance with Data Privacy Act.</p>
+
+<h4>🔐 Responsibilities:</h4>
+<ul>
+<li>Manage users and roles</li>
+<li>Monitor consent records</li>
+<li>Handle data breaches</li>
+<li>Update policies</li>
+<li>Review logs</li>
+</ul>
+
+<h4>📘 Scenarios:</h4>
+<ol>
+<li>Create staff account</li>
+<li>Assign roles</li>
+<li>Monitor logs</li>
+<li>Update policies</li>
+<li>Check system status</li>
+</ol>
+
+<!-- STAFF -->
+{% elif request.user.userprofile.role == "STAFF" %}
+
+<h2>👨‍💻 Staff Guide</h2>
+
+<p><strong>Purpose:</strong> Handles daily privacy operations.</p>
+
+<h4>📋 Responsibilities:</h4>
+<ul>
+<li>Collect consent</li>
+<li>Manage records</li>
+<li>Report breaches</li>
+<li>Assist users</li>
+</ul>
+
+<h4>📘 Steps (Consent):</h4>
+<ol>
+<li>Go to Consent page</li>
+<li>Enter Full Name</li>
+<li>Enter Email</li>
+<li>Enter Purpose</li>
+<li>Check Consent</li>
+<li>Submit</li>
+</ol>
+
+<h4>🚨 Steps (Breach Reporting):</h4>
+<ol>
+<li>Go to Breach page</li>
+<li>Enter Title</li>
+<li>Enter Description</li>
+<li>Select Severity</li>
+<li>Submit Report</li>
+</ol>
+
+<h4>📌 Scenarios:</h4>
+<ol>
+<li><strong>Consent Recording:</strong> Juan Dela Cruz → Registration</li>
+<li><strong>Update Record:</strong> Change email info</li>
+<li><strong>Unauthorized Login:</strong> Multiple login attempts → Medium</li>
+<li><strong>Data Leak:</strong> File shared → High</li>
+<li><strong>User Complaint:</strong> Data misuse → Critical</li>
+</ol>
+
+<!-- USER -->
+{% elif request.user.userprofile.role == "USER" %}
+
+<h2>👤 User Guide</h2>
+
+<p><strong>Purpose:</strong> Provides personal data and controls consent.</p>
+
+<h4>📋 Responsibilities:</h4>
+<ul>
+<li>Provide accurate data</li>
+<li>Understand purpose</li>
+<li>Give or deny consent</li>
+<li>Report issues</li>
+</ul>
+
+<h4>📘 Steps:</h4>
+<ol>
+<li>Go to Consent page</li>
+<li>Fill Name, Email, Purpose</li>
+<li>Check Consent</li>
+<li>Submit</li>
+</ol>
+
+<h4>📌 Scenarios:</h4>
+<ol>
+<li>Register account</li>
+<li>Submit application</li>
+<li>Deny consent</li>
+<li>Report issue</li>
+<li>Update information</li>
+</ol>
+
+{% endif %}
+
+{% else %}
+<h2>Guest Guide</h2>
+<p>Please login to access the system.</p>
+{% endif %}
+
+</div>
 </div>
 
 <!-- FOOTER -->
-<div class="footer">
-
-    <div class="container">
-
-        <div class="row text-center text-md-start">
-
-            <!-- SYSTEM -->
-            <div class="col-md-4 mb-3">
-                <h6 class="fw-bold">🛡 System</h6>
-                <p style="font-size:14px;">
-                    Data Privacy Compliance Management System designed to support organizations in complying with the Data Privacy Act of 2012 (RA 10173).
-                </p>
-            </div>
-
-            <!-- DEVELOPER -->
-            <div class="col-md-4 mb-3">
-                <h6 class="fw-bold">👨‍💻 Developer</h6>
-                <p style="font-size:14px;">
-                    Eduardson Cortez<br>
-                    BS Information Systems – Cybersecurity
-                </p>
-            </div>
-
-            <!-- SCHOOL -->
-            <div class="col-md-4 mb-3">
-                <h6 class="fw-bold">🏫 Academic Institution</h6>
-                <p style="font-size:14px;">
-                    GK College of Business Arts & Technology
-                </p>
-            </div>
-
-        </div>
-
-        <hr style="border-color: rgba(255,255,255,0.2);">
-
-        <div class="text-center" style="font-size:13px;">
-            © 2026 All Rights Reserved | Data Privacy Compliance System
-        </div>
-
-    </div>
-
+<div class="footer text-center text-white p-3">
+© 2026 Data Privacy Compliance System
 </div>
+
+<script>
+function openGuide(){
+document.getElementById("guideModal").style.display="block";
+}
+function closeGuide(){
+document.getElementById("guideModal").style.display="none";
+}
+</script>
 
 </body>
 </html>
